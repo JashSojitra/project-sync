@@ -1,26 +1,266 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * SYNC design tokens.
+ * Brand: Midnight #02070A (canvas), Electric Blue #0297DE (action, availability,
+ * selection, confirmed connections), Cantaloupe #FC734D (urgency, uncovered shifts,
+ * cancellations). Neutrals are cool tints of Midnight. ink-3 and above meet WCAG AA
+ * for body text on every surface; ink-4 is for decoration only.
+ */
+@theme {
+  --color-midnight: #02070a;
+  --color-surface: #071016;
+  --color-surface-2: #0b171e;
+  --color-surface-3: #112129;
+  --color-surface-4: #182c37;
+  --color-line: rgb(170 205 225 / 0.08);
+  --color-line-strong: rgb(170 205 225 / 0.15);
+  --color-line-bright: rgb(170 205 225 / 0.26);
+  --color-ink: #eef3f6;
+  --color-ink-2: #a6b5be;
+  --color-ink-3: #7b8c95;
+  --color-ink-4: #44555e;
+  --color-blue: #0297de;
+  --color-blue-hover: #18a6ea;
+  --color-blue-deep: #064a6c;
+  --color-blue-ink: #5ec0f0;
+  --color-blue-wash: rgb(2 151 222 / 0.13);
+  --color-orange: #fc734d;
+  --color-orange-hover: #ff8662;
+  --color-orange-deep: #3a160b;
+  --color-orange-ink: #ffa085;
+  --color-orange-wash: rgb(252 115 77 / 0.12);
+  --color-success: #4fd1a5;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --radius-chip: 0.4375rem;
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --radius-sheet: 1.5rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --shadow-panel: 0 1px 0 0 rgb(255 255 255 / 0.035) inset, 0 1px 2px rgb(0 6 10 / 0.5), 0 10px 28px -8px rgb(0 6 10 / 0.65), 0 28px 56px -16px rgb(0 6 10 / 0.55);
+  --shadow-float: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 1px 2px rgb(0 6 10 / 0.6), 0 8px 20px -6px rgb(0 6 10 / 0.7);
+  --shadow-lift: 0 2px 4px rgb(0 6 10 / 0.5), 0 18px 40px -10px rgb(0 6 10 / 0.8);
+
+  --animate-pulse-ring: pulse-ring 2.6s var(--ease-out) infinite;
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.7); opacity: 0.65; }
+    100% { transform: scale(2.1); opacity: 0; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html,
+  body {
+    background: var(--color-midnight);
+    color: var(--color-ink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(2 151 222 / 0.35);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  /* Data typography: aligned digits and an unambiguous zero. */
+  .tnum {
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  .display {
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    font-weight: 600;
+  }
+
+  .title {
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+
+  .panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-panel);
+  }
+
+  /*
+   * Floating material: a near-opaque tint with a light blur so the map reads
+   * through only at the edges. Solid when transparency or contrast is reduced.
+   */
+  .material {
+    background: rgb(7 16 22 / 0.86);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--color-line-strong);
+  }
+
+  /*
+   * Glass: a real translucent material for floating UI over the hero city. A bright top
+   * edge catches light; saturation keeps colour behind it alive; text on it uses ink/ink-2.
+   * Larger surfaces read thicker (more blur, deeper shadow) than chips.
+   */
+  .glass {
+    background: rgb(9 20 27 / 0.56);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid rgb(190 225 245 / 0.13);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.11),
+      inset 0 -1px 0 rgb(0 0 0 / 0.25),
+      0 2px 6px rgb(0 4 8 / 0.45),
+      0 28px 64px -20px rgb(0 4 8 / 0.85);
+  }
+  .glass-chip {
+    background: rgb(12 25 33 / 0.5);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgb(190 225 245 / 0.14);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.09), 0 6px 16px -6px rgb(0 4 8 / 0.7);
+  }
+
+  .hero-display {
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  /* Lighting scrims that keep type legible over the city; not decoration. */
+  .hero-scrim {
+    background:
+      linear-gradient(to bottom, rgb(2 7 10 / 0.9) 0%, rgb(2 7 10 / 0.55) 30%, rgb(2 7 10 / 0) 48%),
+      linear-gradient(to top, rgb(2 7 10 / 0.92) 0%, rgb(2 7 10 / 0.4) 24%, rgb(2 7 10 / 0) 40%);
+  }
+  @media (min-width: 1024px) {
+    .hero-scrim {
+      background:
+        radial-gradient(ellipse 60% 70% at 18% 30%, rgb(2 7 10 / 0.82), rgb(2 7 10 / 0) 70%),
+        linear-gradient(to bottom, rgb(2 7 10 / 0.6) 0%, rgb(2 7 10 / 0) 22%),
+        linear-gradient(to top, rgb(2 7 10 / 1) 0%, rgb(2 7 10 / 0) 18%);
+    }
+  }
+
+  /* Immediate press feedback (Apple: scale 0.97, 100ms ease-out). */
+  .press {
+    transition: transform 100ms var(--ease-out), background-color 160ms var(--ease-out), color 160ms var(--ease-out), border-color 160ms var(--ease-out), opacity 160ms var(--ease-out);
+  }
+  .press:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .scroll-quiet {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(170 205 225 / 0.14) transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-chip {
+    background: var(--color-surface-2);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .material {
+    background: var(--color-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass,
+  .glass-chip,
+  .material,
+  .panel {
+    background: var(--color-surface);
+    border-color: var(--color-line-bright);
+  }
+}
+
+/* MapLibre chrome. */
+.maplibregl-canvas:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: -2px;
+}
+.maplibregl-marker {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

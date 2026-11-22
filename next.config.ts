@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Keep the demo screen clean; the dev indicator overlaps the operations rail.
+  devIndicators: false,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
